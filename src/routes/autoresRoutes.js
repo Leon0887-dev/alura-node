@@ -5,10 +5,10 @@ import AutoresController from "../controllers/autoresController.js";
 const router = express.Router();
 
 router
-    .get('/autores', AutoresController.listarAutores)
-    .get('/autores/:id', AutoresController.listarAutoresPorId)
-    .post('/autores', AutoresController.cadastrarAutores)
-    .put('/autores/:id', AutoresController.atualizarAutor)
-    .delete('/autores/:id', AutoresController.excluirAutor)
+  .get("/autores", AutoresController.listarAutores)
+  .get("/autores/:id", AutoresController.listarAutoresPorId)
+  .post("/autores", AutoresController.cadastrarAutores)
+  .put("/autores/:id", AutoresController.atualizarAutor)
+  .delete("/autores/:id", AutoresController.excluirAutor);
 
 export default router;

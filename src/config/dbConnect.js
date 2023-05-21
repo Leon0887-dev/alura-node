@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb+srv://node:123@node-livros.hgpc1ye.mongodb.net/node-livros");
+mongoose.connect(process.env.STRING_CONEXAO_DB);
 
-let db = mongoose.connection
+let db = mongoose.connection;
 
 export default db;
