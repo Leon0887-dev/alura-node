@@ -3,68 +3,70 @@ import livros from "../models/Livro.js";
 
 class LivroController{
    
-  static listarLivros = (req, res)=>{
-    livros.find()
-      .populate("autor")
-      .exec((err, livros)=>{
-        res.status(200).json(livros);
-      });
+  static listarLivros = async (req, res)=>{
+
+    const listaLivros = await livros.find().populate("autor");
+    try {
+      res.status(200).json(listaLivros);
+    } catch (error) {
+      res.status(500).send({message: "servidor indisponivel"});
+    }
   };
 
-  static listarLivroPorId = (req, res)=>{
+  static listarLivroPorId = async (req, res)=>{
     const id = req.params.id; 
-    livros.findById(id)
-      .populate("autor", "nome")
-      .exec((err, livros)=>{
-        if(err){
-          res.status(400).send({message:`${err.message} - Livro não localizado`});
-        }else{
-          res.status(200).send(livros);
-        }
-      });
+    const livroPorId = await livros.findById(id).populate("autor", "nome");
+
+    try {
+      res.status(200).send(livroPorId);
+    } catch (error) {
+      res.status(400).send({message:`${error.message} - Livro não localizado`});
+    }
   };
 
-  static cadastrarLivro = (req,res)=>{
+  static cadastrarLivro = async (req,res)=>{
     let livro = new livros(req.body);
-
-    livro.save((err)=>{
-      if(err){
-        res.status(500).send({message: `${err.message} - falha ao cadastrar livro`});
-      }else{
-        res.status(201).send(livro.toJSON());
-      }
-    });
+    const novoLivro = await livro.save();
+    try {
+      res.status(201).send(novoLivro.toJSON());
+    } catch (error) {
+      res.status(500).send({message: `${error.message} - falha ao cadastrar livro`});
+    }
   };
 
-  static atualizarLivro = (req,res)=>{
+  static atualizarLivro = async (req,res)=>{
     const id = req.params.id; 
-    livros.findByIdAndUpdate(id, {$set: req.body}, (err)=>{
-      if(!err){
-        res.status(200).send({message: "Livro atualiado com sucesso"});
-      }else{
-        res.status(500).send({message: err.message});
-      }
-    });
+    await livros.findByIdAndUpdate(id, {$set: req.body});
+    try {
+      res.status(200).send({message: "Livro atualiado com sucesso"});
+    } catch (error) {
+      res.status(500).send({message: error.message});
+    }
   };
 
 
-  static excluirLivro = (req,res)=>{
+  static excluirLivro = async (req,res)=>{
     const id = req.params.id;
-    livros.findByIdAndDelete(id,(err)=>{
-      if(!err){
-        res.status(200).send({message: "Livro removido com sucesso"});
-      }else{
-        res.status(500).send({message: err.message});
-      }
-    });
+    await livros.findByIdAndDelete(id);
+    try {
+      res.status(200).send({message: "Livro removido com sucesso"});
+    } catch (error) {
+      res.status(500).send({message: error.message});
+    }
   };
 
 
-  static listarLivroPorEditora = (req,res)=>{
+  static listarLivroPorEditora = async (req,res)=>{
     const editora = req.query.editora;
-    livros.find({"editora": editora}, {}, (err, livros) =>{
-      res.status(200).send(livros);
-    });
+    const filtroEditora = await livros.find({editora: editora}, {});
+    try {
+      res.status(200).send(filtroEditora);
+    } catch (error) {
+      res.status(500).send({message: "filtro incorreto"});
+    }
+    // livros.find({"editora": editora}, {}, (err, livros) =>{
+    //   res.status(200).send(livros);
+    // });
   };
 }
 
