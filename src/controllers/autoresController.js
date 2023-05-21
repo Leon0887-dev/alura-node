@@ -13,8 +13,8 @@ class AutoresController{
   };
 
   static listarAutoresPorId = async (req, res)=>{
-    const id = req.params.id;
     try {
+      const id = req.params.id;
       const autoresResultadoId = await autores.findById(id);
       res.status(200).send(autoresResultadoId);
     } catch (error) {
@@ -23,9 +23,9 @@ class AutoresController{
   };
 
   static cadastrarAutores = async  (req, res)=>{
-    let autor = new autores(req.body);
-    const novoAutor = await autor.save();
     try {
+      let autor = new autores(req.body);
+      const novoAutor = await autor.save();
       res.status(201).send(novoAutor.toJSON());
     } catch (error) {
       res.status(500).send({message: `${error.message} - falha ao cadastrar autor`});
@@ -33,9 +33,9 @@ class AutoresController{
   };
 
   static atualizarAutor = async (req, res) =>{
-    const id = req.params.id;
-    await autores.findByIdAndUpdate(id,{$set: req.body});
     try {
+      const id = req.params.id;
+      await autores.findByIdAndUpdate(id,{$set: req.body});  
       res.status(200).send({message: "Autor atualizado com sucesso"});
     } catch (error) {
       res.status(500).send({message: error.message});
@@ -43,9 +43,9 @@ class AutoresController{
   };
 
   static excluirAutor = async (req, res)=>{
-    const id = req.params.id;
-    await autores.findByIdAndDelete(id);
     try {
+      const id = req.params.id;
+      await autores.findByIdAndDelete(id);
       res.status(200).send({message: "Autor removido com sucesso"});
     } catch (error) {
       res.status(500).send({message: error.message});
