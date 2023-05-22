@@ -3,64 +3,64 @@ import livros from "../models/Livro.js";
 
 class LivroController{
    
-  static listarLivros = async (req, res)=>{
+  static listarLivros = async (req, res, next)=>{
     try {
       const listaLivros = await livros.find().populate("autor");
       res.status(200).json(listaLivros);
     } catch (error) {
-      res.status(500).send({message: "servidor indisponivel"});
+      next(error);
     }
   };
 
-  static listarLivroPorId = async (req, res)=>{
+  static listarLivroPorId = async (req, res, next)=>{
     try {
       const id = req.params.id; 
       const livroPorId = await livros.findById(id).populate("autor", "nome");
       res.status(200).send(livroPorId);
     } catch (error) {
-      res.status(400).send({message:`${error.message} - Livro não localizado`});
+      next(error);
     }
   };
 
-  static cadastrarLivro = async (req,res)=>{
+  static cadastrarLivro = async (req,res, next)=>{
     try {
       let livro = new livros(req.body);
       const novoLivro = await livro.save();
       res.status(201).send(novoLivro.toJSON());
     } catch (error) {
-      res.status(500).send({message: `${error.message} - falha ao cadastrar livro`});
+      next(error);
     }
   };
 
-  static atualizarLivro = async (req,res)=>{
+  static atualizarLivro = async (req,res, next)=>{
     try {
       const id = req.params.id; 
       await livros.findByIdAndUpdate(id, {$set: req.body});
       res.status(200).send({message: "Livro atualiado com sucesso"});
     } catch (error) {
-      res.status(500).send({message: error.message});
+      next(error);
     }
   };
 
 
-  static excluirLivro = async (req,res)=>{
+  static excluirLivro = async (req,res, next)=>{
     try {
       const id = req.params.id;
       await livros.findByIdAndDelete(id);
       res.status(200).send({message: "Livro removido com sucesso"});
     } catch (error) {
-      res.status(500).send({message: error.message});
+      next(error);
     }
   };
 
 
-  static listarLivroPorEditora = async (req,res)=>{
+  static listarLivroPorEditora = async (req,res, next)=>{
     try {
       const editora = req.query.editora;
       const filtroEditora = await livros.find({editora: editora}, {});
       res.status(200).send(filtroEditora);
     } catch (error) {
-      res.status(500).send({message: "filtro incorreto"});
+      next(error);
     }
   };
 }
