@@ -1,3 +1,4 @@
+import NaoEncontrado from "../err/NaoEncontrado.js";
 import autores from "../models/Autor.js";  
 
 class AutoresController{
@@ -18,7 +19,7 @@ class AutoresController{
       const autoresResultadoId = await autores.findById(id);
 
       if(autoresResultadoId === null){
-        res.status(404).send({message: "autor não encontrado"});
+        next(new NaoEncontrado("autor não encontrado"));
       }
       res.status(200).send(autoresResultadoId);
     } catch (error) {
