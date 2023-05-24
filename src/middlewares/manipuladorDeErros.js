@@ -4,7 +4,12 @@ import mongoose from "mongoose";
 function manipulandoErros(erro, req, res, next){
   if(erro instanceof mongoose.Error.CastError) {
     res.status(400).send({message: "Um ou mais dados fornecidos estão incorretos"});
-  }else{
+  }else if(erro instanceof mongoose.Error.ValidationError){
+    const mensagemError = Object.values(erro.errors)
+      .map(err => err.message)
+      .join("; ");
+    res.status(400).send({message: mensagemError}); 
+  } else{
     res.status(500).send({message: "Error interno do servidor"});
   }
 }
