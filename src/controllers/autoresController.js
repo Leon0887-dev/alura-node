@@ -40,7 +40,10 @@ class AutoresController{
   static atualizarAutor = async (req, res, next) =>{
     try {
       const id = req.params.id;
-      await autores.findByIdAndUpdate(id,{$set: req.body});  
+      let atualizarAutor = await autores.findByIdAndUpdate(id,{$set: req.body});  
+
+      if(atualizarAutor === null) next(new NaoEncontrado("Autor não encontrado"));
+
       res.status(200).send({message: "Autor atualizado com sucesso"});
     } catch (error) {
       next(error);
@@ -50,8 +53,15 @@ class AutoresController{
   static excluirAutor = async (req, res, next)=>{
     try {
       const id = req.params.id;
-      await autores.findByIdAndDelete(id);
-      res.status(200).send({message: "Autor removido com sucesso"});
+      let autorDelete = await autores.findByIdAndDelete(id);
+
+      
+      if(autorDelete !== null){
+        res.status(200).send({message: "Autor removido com sucesso"});
+      }else{
+        next(new NaoEncontrado("Autor não encontrado"));
+      } 
+      
     } catch (error) {
       next(error);
     }
